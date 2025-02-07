@@ -9,7 +9,7 @@ def review_code():
     repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     # Construct the full path to app.py
-    app_file_path = os.path.join(repo_root, "app.py")
+    app_file_path = os.path.join(repo_root, "helloworld.java")
 
     # Open the file
     with open(app_file_path, "r") as f:
@@ -26,7 +26,7 @@ def review_code():
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[{"role": "system", "content": "You are a Python code reviewer."},
+        messages=[{"role": "system", "content": "You are a java code reviewer."},
                   {"role": "user", "content": prompt}]
     )
     review_feedback = response.choices[0].message.content
