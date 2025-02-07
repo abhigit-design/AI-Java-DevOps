@@ -81,26 +81,3 @@ jobs:
         with:
           name: app-artifact
           path: target/*.jar
-
-  deploy_to_ec2:
-    needs: build_and_test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: app-artifact
-          path: target/
-
-      - name: Deploy to EC2
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
-          scp -i private_key.pem target/*.jar $USER@$HOST:/home/$USER/app.jar
-          ssh -i private_key.pem $USER@$HOST << 'EOF'
-            nohup java -jar /home/$USER/app.jar > app.log 2>&1 &
-          EOF
