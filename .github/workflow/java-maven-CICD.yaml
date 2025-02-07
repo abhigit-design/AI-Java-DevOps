@@ -1,0 +1,106 @@
+name: Java Maven CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ai_code_review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: pip install --upgrade openai
+
+      - name: Run AI Code Review
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python scripts/ai_code_review.py
+
+      - name: Upload Reports as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-reports
+          path: ./reports
+
+  ai_test_generation:
+    needs: ai_code_review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: pip install openai pytest
+
+      - name: Generate AI-Based Unit Tests
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python scripts/ai_test_generator.py
+
+      - name: Upload Tests as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-tests
+          path: tests/
+
+  build_and_test:
+    needs: ai_test_generation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build with Maven
+        run: mvn clean package
+
+      - name: Run Tests
+        run: mvn test
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-artifact
+          path: target/*.jar
+
+  deploy_to_ec2:
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-artifact
+          path: target/
+
+      - name: Deploy to EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          scp -i private_key.pem target/*.jar $USER@$HOST:/home/$USER/app.jar
+          ssh -i private_key.pem $USER@$HOST << 'EOF'
+            nohup java -jar /home/$USER/app.jar > app.log 2>&1 &
+          EOF
