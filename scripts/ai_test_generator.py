@@ -1,49 +1,57 @@
 import openai
 import os
-import sys
 
 # Load API Key
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def generate_tests():
+    # Get the absolute path of the repository root
     repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
-    # Add repo_root to the Python path so pytest can find app.py
-    sys.path.append(repo_root)
-    
-    # Construct the full path to app.py
-    app_file_path = os.path.join(repo_root, "app.py")
+    # Construct the full path to HelloWorld.java
+    java_file_path = os.path.join(repo_root, "HelloWorld.java")
 
-    # Open the file
-    with open(app_file_path, "r") as f:
+    # Check if the Java file exists
+    if not os.path.exists(java_file_path):
+        print("❌ HelloWorld.java not found in the repository.")
+        return
+
+    # Open the Java file
+    with open(java_file_path, "r") as f:
         code_snippet = f.read()
 
-    # Update the prompt to generate only pytest test code without extra text
-    prompt = f"Generate unit tests for this Python code using pytest. Do not include any additional explanation or comments, only the test code. Ensure the test imports the functions correctly from 'app.py':\n{code_snippet}"
+    # Customize the prompt for JUnit test generation
+    prompt = f"""
+    Generate JUnit test cases for the following Java code. Do not include any additional explanation or comments. Ensure the tests use assertions and include basic coverage for all public methods in the code:
+    ```
+    {code_snippet}
+    ```
+    """
 
     # Request the test code from OpenAI API
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "system", "content": prompt}]
+    response = openai.Completion.create(
+        model="gpt-4",  # You can use other models depending on your preference
+        prompt=prompt,
+        max_tokens=500,
+        temperature=0.7
     )
 
     # Extract the generated test code
-    test_code = response.choices[0].message.content.strip()  # Clean any extra whitespace or unwanted text
+    test_code = response.choices[0].text.strip()
 
-    # Clean up any markdown formatting or non-Python syntax (like ```python)
-    test_code = test_code.replace("```python", "").replace("```", "").strip()
+    # Clean up any markdown formatting (like ```java)
+    test_code = test_code.replace("```java", "").replace("```", "").strip()
 
-    # Replace 'your_module' with 'app'
-    test_code = test_code.replace("your_module", "app")
-
+    # Create the tests directory if it doesn't exist
     tests_dir = os.path.join(repo_root, 'tests')
-    os.makedirs(tests_dir, exist_ok=True)  # Create the directory if it doesn't exist
+    os.makedirs(tests_dir, exist_ok=True)
 
-    # Save the test code to a file
-    with open(os.path.join(tests_dir, "test_app.py"), "w") as f:
+    # Save the generated test code to a file
+    test_filename = "test_HelloWorld.java"
+    with open(os.path.join(tests_dir, test_filename), "w") as f:
         f.write(test_code)
 
-    print("AI-Generated Unit Tests:\n", test_code)
+    print(f"✅ AI-Generated Unit Tests for HelloWorld.java: Saved to {test_filename}")
 
 if __name__ == "__main__":
     generate_tests()
