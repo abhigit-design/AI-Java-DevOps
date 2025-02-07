@@ -1,8 +1,9 @@
 import openai
 import os
+import sys
 
 # Load API Key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def generate_tests():
     # Get the absolute path of the repository root
@@ -31,16 +32,14 @@ def generate_tests():
     """
 
     # Request the test code from OpenAI API (Updated for ChatCompletion)
-    response = openai.ChatCompletion.create(
-        model="gpt-4",  # You can use "gpt-3.5-turbo" if needed
-        messages=[{"role": "system", "content": "You are an AI that generates JUnit test cases."},
-                  {"role": "user", "content": prompt}],
-        max_tokens=500,
-        temperature=0.7
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "system", "content": prompt}]
     )
 
+
     # Extract the generated test code
-    test_code = response["choices"][0]["message"]["content"].strip()
+    test_code = response.choices[0].message.content.strip()  # Clean any extra whitespace or unwanted text
 
     # Clean up any markdown formatting (like ```java)
     test_code = test_code.replace("```java", "").replace("```", "").strip()
