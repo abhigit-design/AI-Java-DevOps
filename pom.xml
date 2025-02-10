@@ -3,7 +3,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId> <!-- Change this to your own group ID -->
+    <!-- Spring Boot Parent POM -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.8</version> <!-- Adjust version as needed -->
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <groupId>com.example</groupId>
     <artifactId>AI-Java-DevOps</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -17,6 +25,12 @@
     </properties>
 
     <dependencies>
+        <!-- Spring Boot Starter Web for REST APIs -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
         <!-- JUnit 5 for unit testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -37,14 +51,6 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.32</version>
         </dependency>
-
-        <!-- Spring Boot dependencies (Optional, only if you're using Spring Boot) -->
-        <!-- 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        -->
     </dependencies>
 
     <build>
