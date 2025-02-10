@@ -6,7 +6,7 @@ client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def review_code():
     # Get the absolute path of the repository root
-    repo_root = os.path.dirname(os.path.abspath(__file__))  # Adjusted path
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     # Correct file path for HelloWorld.java inside src/main/java
     app_file_path = os.path.join(repo_root, "src", "main", "java", "HelloWorld.java")
