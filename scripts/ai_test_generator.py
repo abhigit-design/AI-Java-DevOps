@@ -6,7 +6,7 @@ import sys
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def generate_tests():
- repo_root = os.path.dirname(os.path.abspath(__file__))  # Adjusted path
+    repo_root = os.path.dirname(os.path.abspath(__file__))  # Adjusted path
 
     # Correct file path for HelloWorld.java inside src/main/java
     app_file_path = os.path.join(repo_root, "src", "main", "java", "HelloWorld.java")
@@ -18,7 +18,6 @@ def generate_tests():
     except FileNotFoundError:
         print(f"⚠️ File {app_file_path} not found. Please check the path.")
         return
-    
 
     # Customize the prompt for JUnit test generation
     prompt = f"""
@@ -41,7 +40,6 @@ def generate_tests():
         model="gpt-4o-mini",
         messages=[{"role": "system", "content": prompt}]
     )
-
 
     # Extract the generated test code
     test_code = response.choices[0].message.content.strip()  # Clean any extra whitespace or unwanted text
