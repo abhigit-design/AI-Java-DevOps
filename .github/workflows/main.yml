@@ -84,7 +84,7 @@ jobs:
         run: mvn clean package
 
       - name: Run Tests
-        run: mvn test
+        run: mvn clean test
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
