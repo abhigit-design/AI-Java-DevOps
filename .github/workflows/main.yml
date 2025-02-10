@@ -54,7 +54,7 @@ jobs:
 
       - name: Move Generated Tests to Maven Test Directory
         run: |
-          mkdir -p src/test/java/com/example/demo/
+          mkdir -p src/test/java/
           mv tests/*.java src/test/java/
 
       - name: Upload Tests as Artifact
@@ -84,7 +84,7 @@ jobs:
         run: mvn clean package
 
       - name: Run Tests
-        run: mvn test -X
+        run: mvn test
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
