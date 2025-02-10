@@ -84,7 +84,7 @@ jobs:
         run: mvn clean package
 
       - name: Run Tests
-        run: mvn -Dtest=com.example.demo.HelloControllerTest test
+        run: mvn test
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
