@@ -54,14 +54,14 @@ jobs:
 
       - name: Move Generated Tests to Maven Test Directory
         run: |
-          mkdir -p src/test/resources/
-          mv tests/*.java src/test/resources/
+            mkdir -p src/test/java/com/example/
+            mv tests/*.java src/test/java/com/example/
 
       - name: Upload Tests as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: generated-tests
-          path: src/test/resources
+          path: src/test/java/com/example/
 
   build_and_test:
     needs: ai_test_generation
