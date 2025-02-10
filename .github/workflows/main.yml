@@ -52,11 +52,16 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python scripts/ai_test_generator.py
 
+      - name: Move Generated Tests to Maven Test Directory
+        run: |
+          mkdir -p src/test/java/com/example
+          mv tests/*.java src/test/java/com/example/
+
       - name: Upload Tests as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: generated-tests
-          path: tests/
+          path: src/test/java/com/example
 
   build_and_test:
     needs: ai_test_generation
