@@ -6,18 +6,22 @@ client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def review_code():
     # Get the absolute path of the repository root
-    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    repo_root = os.path.dirname(os.path.abspath(__file__))  # Adjusted path
 
-    # Construct the full path to app.py
-    app_file_path = os.path.join(repo_root, "HelloWorld.java")
+    # Correct file path for HelloWorld.java inside src/main/java
+    app_file_path = os.path.join(repo_root, "src", "main", "java", "HelloWorld.java")
 
-    # Open the file
-    with open(app_file_path, "r") as f:
-        code_snippet = f.read()
+    # Read Java file
+    try:
+        with open(app_file_path, "r") as f:
+            code_snippet = f.read()
+    except FileNotFoundError:
+        print(f"⚠️ File {app_file_path} not found. Please check the path.")
+        return
     
     # Uses AI to review the quality and security of the code
     prompt = f"""
-    Review the following Python code for security vulnerabilities, performance optimizations, and best practices:
+    Review the following Java code for security vulnerabilities, performance optimizations, and best practices:
     ```
     {code_snippet}
     ```
@@ -30,6 +34,7 @@ def review_code():
                   {"role": "user", "content": prompt}]
     )
     review_feedback = response.choices[0].message.content
+
     # Ensure the reports directory exists
     reports_dir = os.path.join(repo_root, 'reports')
     os.makedirs(reports_dir, exist_ok=True)  # This will create the directory if it doesn't exist
