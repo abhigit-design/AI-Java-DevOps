@@ -23,10 +23,14 @@ def generate_tests():
 
     # Customize the prompt for JUnit test generation
     prompt = f"""
-    You are an AI that generates JUnit test cases for a simple Java class. The class does not use any web-related features or frameworks like Spring. Generate JUnit test cases that test the public methods of the class provided below. 
-    Ensure the tests use assertions and include basic coverage for all public methods in the code. 
-    Do not include any additional explanation or comments. 
-    Please ensure the generated test class includes a package declaration that matches the directory structure.
+    You are an AI that generates JUnit test cases for a simple Java class. The class does not use any web-related features or frameworks like Spring. Generate JUnit test cases that test the public methods of the class provided below. Ensure the tests use assertions and provide basic coverage for all public methods in the code. 
+
+    - Ensure the generated test class is **public**.
+    - Ensure the generated test method is **public**.
+    - Include a **package declaration** that matches the directory structure.
+    - The test class should be named following the convention `ClassNameTest` (where `ClassName` is the class being tested).
+
+    Do not include any additional explanation or comments.
 
     ```
     {code_snippet}
