@@ -48,7 +48,7 @@ def generate_tests():
     os.makedirs(tests_dir, exist_ok=True)
 
     # Save the generated test code to a file
-    test_filename = "HelloWorldTest.java"
+    test_filename = "HelloControllerTest.java"
     with open(os.path.join(tests_dir, test_filename), "w") as f:
         f.write(test_code)
 
