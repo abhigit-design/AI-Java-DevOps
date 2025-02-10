@@ -7,6 +7,13 @@
     <artifactId>AI-Java-DevOps</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <!-- Parent Spring Boot POM -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.5</version> <!-- You can use the latest version -->
+    </parent>
+
     <properties>
         <!-- Java Version -->
         <maven.compiler.source>17</maven.compiler.source>
@@ -17,6 +24,12 @@
     </properties>
 
     <dependencies>
+        <!-- Spring Boot Starter Web (for building web applications) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
         <!-- JUnit 5 for unit testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -57,11 +70,17 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
-            <configuration>
-                <includes>
-                    <include>**/*Test.java</include>
-                </includes>
-            </configuration>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+
+            <!-- Spring Boot Maven Plugin for packaging and running the app -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
