@@ -6,20 +6,19 @@ import sys
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def generate_tests():
-    # Get the absolute path of the repository root
-    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    
-    # Construct the full path to HelloWorld.java
-    java_file_path = os.path.join(repo_root, "HelloWorld.java")
+ repo_root = os.path.dirname(os.path.abspath(__file__))  # Adjusted path
 
-    # Check if the Java file exists
-    if not os.path.exists(java_file_path):
-        print("❌ HelloWorld.java not found in the repository.")
+    # Correct file path for HelloWorld.java inside src/main/java
+    app_file_path = os.path.join(repo_root, "src", "main", "java", "HelloWorld.java")
+
+    # Read Java file
+    try:
+        with open(app_file_path, "r") as f:
+            code_snippet = f.read()
+    except FileNotFoundError:
+        print(f"⚠️ File {app_file_path} not found. Please check the path.")
         return
-
-    # Open the Java file
-    with open(java_file_path, "r") as f:
-        code_snippet = f.read()
+    
 
     # Customize the prompt for JUnit test generation
     prompt = f"""
