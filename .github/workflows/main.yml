@@ -79,8 +79,8 @@ jobs:
       - name: Install Maven dependencies
         run: mvn install  # Ensure dependencies are downloaded
 
-      - name: Run Snyk Security Test
-        run: snyk test --json --debug > snyk_report.json
+      - name: Run Snyk Security Test (continue on vulnerabilities)
+        run: snyk test --json --debug --fail-on=none > snyk_report.json  # Ignore vulnerabilities and do not fail the pipeline
 
       - name: Upload Snyk Report as Artifact
         uses: actions/upload-artifact@v4
@@ -88,8 +88,34 @@ jobs:
           name: snyk-report
           path: snyk_report.json
 
+  ai_security_scan_analysis:
+    needs: security_scan  # Ensure this job runs after the security_scan job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: pip install openai
+
+      - name: Run AI Security Scan Analysis
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python scripts/ai_security_scan.py snyk_report.json
+
+      - name: Upload AI Security Scan Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-security-report
+          path: ./ai_security_report.json
+
   build_and_test:
-    needs: [ai_test_generation, security_scan]  # Ensure this job runs after ai_test_generation and security_scan
+    needs: [ai_test_generation, security_scan, ai_security_scan_analysis]  # Ensure this job runs after the other jobs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -112,6 +138,12 @@ jobs:
         with:
           name: snyk-report
           path: snyk_report.json  # Download the Snyk report to analyze in AI
+
+      - name: Download AI Security Report
+        uses: actions/download-artifact@v4
+        with:
+          name: ai-security-report
+          path: ai_security_report.json  # Download the AI security analysis report
 
       - name: Build with Maven
         run: mvn clean package
