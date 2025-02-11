@@ -73,6 +73,9 @@ jobs:
       - name: Install Snyk CLI
         run: npm install -g snyk
 
+      - name: Check Snyk Version
+        run: snyk --version  # Check the installed version of Snyk
+
       - name: Authenticate with Snyk
         run: snyk auth ${{ secrets.SNYK_API_TOKEN }}
 
