@@ -6,8 +6,9 @@ import sys
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def generate_tests():
-    
+    # Move up one directory to get the actual repo root
     repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
     # Correct file path for HelloWorld.java inside src/main/java
     app_file_path = os.path.join(repo_root, "src", "main", "java", "HelloWorld.java")
 
@@ -42,13 +43,13 @@ def generate_tests():
     )
 
     # Extract the generated test code
-    test_code = response.choices[0].message.content.strip()  # Clean any extra whitespace or unwanted text
+    test_code = response.choices[0].message.content.strip()
 
     # Clean up any markdown formatting (like ```java)
     test_code = test_code.replace("```java", "").replace("```", "").strip()
 
-    # Create the tests directory if it doesn't exist
-    tests_dir = os.path.join(repo_root, 'tests')
+    # Ensure src/test/java directory exists
+    tests_dir = os.path.join(repo_root, "src", "test", "java")
     os.makedirs(tests_dir, exist_ok=True)
 
     # Save the generated test code to a file
