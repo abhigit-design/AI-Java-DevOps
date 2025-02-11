@@ -20,6 +20,14 @@ def generate_tests():
         print(f"⚠️ File {app_file_path} not found. Please check the path.")
         return
 
+    # Automatically determine the package for the test class based on the project's src/test/java structure
+    test_dir = os.path.join(repo_root, "src", "test", "java")
+    if os.path.isdir(test_dir):
+        # Assuming the test package structure mirrors the main Java package structure
+        package_name = os.path.basename(test_dir)
+    else:
+        package_name = "your.package.name"  # Default placeholder if no test package structure exists
+
     # Customize the prompt for JUnit test generation
     prompt = f"""
     You are an AI that generates JUnit test cases for a simple Java class. The class does not use any web-related features or frameworks like Spring. Generate JUnit test cases that test the public methods of the class provided below. Ensure the tests use assertions and provide basic coverage for all public methods in the code.
@@ -36,6 +44,9 @@ def generate_tests():
     ```
     {code_snippet}
     ```
+
+    The generated test class should have the following package declaration:
+    `package {package_name};`
     """
 
     # Request the test code from OpenAI API (Updated for ChatCompletion)
