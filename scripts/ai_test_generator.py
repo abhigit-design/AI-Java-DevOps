@@ -28,7 +28,8 @@ def generate_tests():
     - Ensure the generated test method is **public**.
     - Include a **package declaration** that matches the directory structure.
     - The test class should be named following the convention `ClassNameTest` (where `ClassName` is the class being tested).
-    - For methods that print output (like `System.out.println()`), capture the output and assert it.
+    - For methods that print output (like `System.out.println()`), capture the output using `ByteArrayOutputStream` and `PrintStream`, then assert the output using `assertEquals`.
+    - Ensure the code restores `System.out` after capturing output.
 
     Do not include any additional explanation or comments.
 
