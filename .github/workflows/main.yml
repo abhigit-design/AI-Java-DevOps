@@ -77,7 +77,7 @@ jobs:
           java-version: '17'
 
       - name: Download Generated Tests
-        uses: actions/download-artifact@v2  # Download the artifact created in ai_test_generation
+        uses: actions/download-artifact@v4  # Download the artifact created in ai_test_generation
         with:
           name: generated-tests
           path: src/test/java  # Download to the same path
