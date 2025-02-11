@@ -20,29 +20,13 @@ def generate_tests():
         print(f"⚠️ File {app_file_path} not found. Please check the path.")
         return
 
-    # Automatically determine the package for the test class based on the project's src/test/java structure
-    test_dir = os.path.join(repo_root, "src", "test", "java")
-    
-    # This step checks if the test directory exists and gets the package name by traversing its structure
-    if os.path.isdir(test_dir):
-        # Get the directory structure for the first folder in src/test/java (base package directory)
-        # Example: if your directory is src/test/java/com/example, the package would be "com.example"
-        subdirs = os.listdir(test_dir)
-        if subdirs:
-            # Assuming the first folder is the package name
-            package_name = '.'.join(subdirs)
-        else:
-            package_name = "your.package.name"  # Default placeholder if no subfolder found
-    else:
-        package_name = "your.package.name"  # Default placeholder if no test package structure exists
-
-    # Customize the prompt for JUnit test generation
+    # Customize the prompt for JUnit test generation without package declaration
     prompt = f"""
     You are an AI that generates JUnit test cases for a simple Java class. The class does not use any web-related features or frameworks like Spring. Generate JUnit test cases that test the public methods of the class provided below. Ensure the tests use assertions and provide basic coverage for all public methods in the code.
 
     - Ensure the generated test class is **public**.
     - Ensure the generated test method is **public**.
-    - Include a **package declaration** that matches the directory structure.
+    - Do not include any **package declaration** in the test class.
     - The test class should be named following the convention `ClassNameTest` (where `ClassName` is the class being tested).
     - For methods that print output (like `System.out.println()`), capture the output using `ByteArrayOutputStream` and `PrintStream`, then assert the output using `assertEquals`.
     - Ensure the code restores `System.out` after capturing output.
@@ -53,8 +37,7 @@ def generate_tests():
     {code_snippet}
     ```
 
-    The generated test class should have the following package declaration:
-    `package {package_name};`
+    The generated test class should not contain any `package` line at the top.
     """
 
     # Request the test code from OpenAI API (Updated for ChatCompletion)
