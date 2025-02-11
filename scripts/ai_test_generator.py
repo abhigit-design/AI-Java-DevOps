@@ -22,9 +22,17 @@ def generate_tests():
 
     # Automatically determine the package for the test class based on the project's src/test/java structure
     test_dir = os.path.join(repo_root, "src", "test", "java")
+    
+    # This step checks if the test directory exists and gets the package name by traversing its structure
     if os.path.isdir(test_dir):
-        # Assuming the test package structure mirrors the main Java package structure
-        package_name = os.path.basename(test_dir)
+        # Get the directory structure for the first folder in src/test/java (base package directory)
+        # Example: if your directory is src/test/java/com/example, the package would be "com.example"
+        subdirs = os.listdir(test_dir)
+        if subdirs:
+            # Assuming the first folder is the package name
+            package_name = '.'.join(subdirs)
+        else:
+            package_name = "your.package.name"  # Default placeholder if no subfolder found
     else:
         package_name = "your.package.name"  # Default placeholder if no test package structure exists
 
