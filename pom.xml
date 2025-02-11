@@ -73,11 +73,11 @@
                 <version>${surefire.version}</version>
                 <configuration>
                     <includes>
+                        <!-- Make sure the test includes the pattern correctly -->
                         <include>**/*Test.java</include>
                     </includes>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>
