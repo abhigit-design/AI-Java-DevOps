@@ -82,8 +82,8 @@ jobs:
       - name: Install Maven dependencies
         run: mvn install  # Ensure dependencies are downloaded
 
-      - name: Run Snyk Security Test (continue on vulnerabilities)
-        run: snyk test --json --debug --fail-on=none > snyk_report.json  # Ignore vulnerabilities and do not fail the pipeline
+      - name: Run Snyk Security Test
+        run: snyk test --json --debug > snyk_report.json
 
       - name: Upload Snyk Report as Artifact
         uses: actions/upload-artifact@v4
