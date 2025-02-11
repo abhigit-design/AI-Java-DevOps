@@ -47,7 +47,7 @@ jobs:
         run: pip install openai pytest
 
       - name: Ensure Test Directory Exists
-        run: mkdir -p src/test/java/
+        run: mkdir -p src/test/java/  # Make sure the directory is created
 
       - name: Generate AI-Based Unit Tests
         env:
@@ -61,10 +61,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: generated-tests
-          path: src/test/java
+          path: src/test/java  # Ensure tests are uploaded for the next job
 
   build_and_test:
-    needs: ai_test_generation
+    needs: ai_test_generation  # Ensure this job runs after the ai_test_generation job
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -76,16 +76,11 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Verify Java Version
-        run: java -version  # To verify that Java 17 is correctly set up
-
-      - name: Verify Maven Version
-        run: mvn -version  # To ensure Maven is correctly set up
-
-      - name: Verify Generated Test File Content
-        run: |
-          ls -la src/test/java/  # Verify that the test file is present
-          cat src/test/java/HelloWorldTest.java  # Check the content of the test file
+      - name: Download Generated Tests
+        uses: actions/download-artifact@v2  # Download the artifact created in ai_test_generation
+        with:
+          name: generated-tests
+          path: src/test/java  # Download to the same path
 
       - name: Build with Maven
         run: mvn clean package
