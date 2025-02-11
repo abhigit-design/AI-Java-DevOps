@@ -63,8 +63,27 @@ jobs:
           name: generated-tests
           path: src/test/java  # Ensure tests are uploaded for the next job
 
-  build_and_test:
+  security_scan:
     needs: ai_test_generation  # Ensure this job runs after the ai_test_generation job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
+      - name: Run Snyk Security Test
+        run: snyk test --all-projects --json > snyk_report.json
+
+      - name: Upload Snyk Report as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-report
+          path: snyk_report.json
+
+  build_and_test:
+    needs: [ai_test_generation, security_scan]  # Ensure this job runs after ai_test_generation and security_scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -81,6 +100,12 @@ jobs:
         with:
           name: generated-tests
           path: src/test/java  # Download to the same path
+
+      - name: Download Snyk Report
+        uses: actions/download-artifact@v4
+        with:
+          name: snyk-report
+          path: snyk_report.json  # Download the Snyk report to analyze in AI
 
       - name: Build with Maven
         run: mvn clean package
