@@ -65,7 +65,7 @@ jobs:
           path: src/test/java  # Ensure tests are uploaded for the next job
 
   build_and_test:
-    needs: [ai_test_generation, security_scan, ai_security_scan_analysis]  # Ensure this job runs after the other jobs
+    needs: ai_test_generation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
