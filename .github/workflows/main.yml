@@ -116,6 +116,9 @@ jobs:
           name: snyk-report
           path: ./snyk-report
 
+      - name: Print Working Directory
+        run: pwd
+        
       - name: Verify snyk report Exist
         run: ls -la ./snyk-report
 
