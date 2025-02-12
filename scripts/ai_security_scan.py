@@ -6,7 +6,7 @@ client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def analyze_security():
     # Path to the Snyk security scan report
-    security_scan_report = "snyk-report.json"  # Ensure this matches where the file is stored
+    security_scan_report = os.path.join(os.getcwd(), "snyk-report", "snyk-report.json")
 
     # Read the security scan report
     try:
