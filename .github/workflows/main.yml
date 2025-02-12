@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - AI-CR-Testing
 
 jobs:
   ai_code_review:
