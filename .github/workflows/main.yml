@@ -116,6 +116,8 @@ jobs:
           name: snyk-report
           path: ./snyk-report
 
+      - name: Verify snyk report Exist
+        run: ls -la ./snyk-report
 
       - name: Run AI Security Scan Analysis
         env:
