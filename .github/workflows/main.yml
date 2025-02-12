@@ -109,10 +109,20 @@ jobs:
       - name: Install Dependencies
         run: pip install openai
 
+      # Download and unzip the snyk report artifact
+      - name: Download Snyk Report Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: snyk-report
+          path: ./snyk-report
+
+      - name: Unzip snyk-report artifact
+        run: unzip ./snyk-report/snyk-report.zip -d ./snyk-report
+
       - name: Run AI Security Scan Analysis
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: python scripts/ai_security_scan.py snyk-report.json
+        run: python scripts/ai_security_scan.py ./snyk-report/snyk-report.json
 
       - name: Upload AI Security Scan Report
         uses: actions/upload-artifact@v4
@@ -143,7 +153,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: snyk-report
-          path: snyk_report.json  # Download the Snyk report to analyze in AI
+          path: ./snyk-report/snyk-report.json  # Corrected path
 
       - name: Download AI Security Report
         uses: actions/download-artifact@v4
