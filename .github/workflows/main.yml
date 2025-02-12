@@ -116,8 +116,6 @@ jobs:
           name: snyk-report
           path: ./snyk-report
 
-      - name: Unzip snyk-report artifact
-        run: unzip ./snyk-report/snyk-report.zip -d ./snyk-report
 
       - name: Run AI Security Scan Analysis
         env:
