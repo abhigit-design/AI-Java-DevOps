@@ -35,7 +35,7 @@ jobs:
   manual_approval:
     needs: ai_code_review
     runs-on: ubuntu-latest
-    environment: manual-approval  # GitHub Environment for manual review
+    environment: manual-approval-required  # GitHub Environment for manual review
     steps:
       - name: Pause for Manual Review
         run: echo "Waiting for manual approval in GitHub UI..."
