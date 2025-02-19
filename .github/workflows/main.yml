@@ -32,8 +32,16 @@ jobs:
           name: ai-reports
           path: ./reports
 
-  ai_test_generation:
+  manual_approval:
     needs: ai_code_review
+    runs-on: ubuntu-latest
+    environment: manual-approval  # GitHub Environment for manual review
+    steps:
+      - name: Pause for Manual Review
+        run: echo "Waiting for manual approval in GitHub UI..."
+        
+  ai_test_generation:
+    needs: manual_approval  # Requires manual approval first
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -83,7 +91,6 @@ jobs:
           name: generated-tests
           path: src/test/java  # Download to the same path
 
-      
       - name: Build with Maven
         run: mvn clean package
 
