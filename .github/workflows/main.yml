@@ -31,6 +31,19 @@ jobs:
         with:
           name: ai-reports
           path: ./reports
+          
+      - name: Send Email Notification for Approval
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}  # Stored securely
+          subject: "🚀 Manual Approval Required for AI Code Review"
+          body: "AI has completed the code review. Please review and approve/reject the pipeline in GitHub Actions."
+          to: "abhishek.somani@capgemini.com"
+          from: "${{ secrets.SMTP_USERNAME }}"
+
 
   manual_approval:
     needs: ai_code_review
