@@ -37,7 +37,7 @@ jobs:
           curl -X POST -H "Content-Type: application/json" -d '{
             "title": "Manual Approval Needed",
             "message": "Review AI Code Report: https://github.com/YOUR_REPO/actions/runs"
-          }' ${{ secrets.POWER_AUTOMATE_URL }}
+          }' ${{ secrets.TEAMS_WEBHOOK_URL }}
 
   manual_approval:
     needs: ai_code_review
