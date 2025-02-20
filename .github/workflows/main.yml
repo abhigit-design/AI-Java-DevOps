@@ -32,15 +32,21 @@ jobs:
           name: ai-reports
           path: ./reports
 
+      - name: Send Teams Notification for Approval
+        run: |
+          curl -X POST -H "Content-Type: application/json" -d '{
+            "title": "Manual Approval Needed",
+            "message": "Review AI Code Report: https://github.com/YOUR_REPO/actions/runs"
+          }' ${{ secrets.POWER_AUTOMATE_URL }}
 
   manual_approval:
     needs: ai_code_review
     runs-on: ubuntu-latest
-    environment: manual-approval-required  # GitHub Environment for manual review
+    environment: manual-approval-required  # Enforce manual approval via GitHub Environments
     steps:
       - name: Pause for Manual Review
         run: echo "Waiting for manual approval in GitHub UI..."
-        
+
   ai_test_generation:
     needs: manual_approval  # Requires manual approval first
     runs-on: ubuntu-latest
