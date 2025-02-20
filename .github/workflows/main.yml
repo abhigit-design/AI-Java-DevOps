@@ -35,7 +35,7 @@ jobs:
       - name: Send Teams Notification for Approval
         run: |
           curl -X POST -H "Content-Type: application/json" -d '{
-            "text": "🚀 *Manual Approval Needed* 🚀\n\nAI Code Review is complete. Please review and approve to continue.\n\n🔗 [GitHub Actions Run](https://github.com/abhigit-design/AI-Java-DevOps/actions/runs)"
+            "text": "🚀 *Manual Approval Needed* 🚀\n\nAI Code Review is complete. Please review and approve to continue.\n\n🔗 [GitHub Actions Run](https://github.com/abhigit-design/AI-Java-DevOps/actions/runs/${{ github.run_id }})"
           }' ${{ secrets.TEAMS_WEBHOOK_URL }}
 
   manual_approval:
