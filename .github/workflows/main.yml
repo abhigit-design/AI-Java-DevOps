@@ -30,9 +30,10 @@ jobs:
           
       - name: Send Teams Notification for PR Changes
         run: |
-          curl -X POST -H "Content-Type: application/json" -d '{
-            "text": "🚀 *PR Created* 🚀\n\nPR has been created. Developer, please review the following changes before approving:\n\n'$(cat pr_changes.txt)'\n\nOnce reviewed, approve the PR to proceed with full code review."
-          }' ${{ secrets.TEAMS_WEBHOOK_URL }}
+          pr_changes=$(cat pr_changes.txt)
+          curl -X POST -H "Content-Type: application/json" -d "{
+            \"text\": \"🚀 *PR Created* 🚀\n\nPR has been created. Developer, please review the following changes before approving:\n\n$pr_changes\n\nOnce reviewed, approve the PR to proceed with full code review.\"
+          }" ${{ secrets.TEAMS_WEBHOOK_URL }}
 
   manual_approval_for_pr:
     needs: ai_code_review
@@ -60,7 +61,7 @@ jobs:
       - name: Run Full Code Review
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: python scripts/ai_code_review_full.py
+        run: python scripts/ai_code_review.py
 
       - name: Upload Full Code Review Report
         uses: actions/upload-artifact@v4
