@@ -31,9 +31,11 @@ jobs:
       - name: Send Teams Notification for PR Changes
         run: |
           pr_url="https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
-          pr_changes=$(cat pr_changes.txt)
+          pr_changes=$(cat pr_changes.txt)  # Read the content of pr_changes.txt
+          # If the changes are large, we will trim the content to avoid cutting off.
+          pr_changes_preview=$(echo "$pr_changes" | head -n 10)  # Optional, trim the first 10 lines if too long
           curl -X POST -H "Content-Type: application/json" -d "{
-            \"text\": \"🚀 *PR Created* 🚀\n\nPR has been created. Developer, please review the following changes before approving:\n\n$pr_changes\n\n🔗 [View PR]($pr_url)\n\nOnce reviewed, approve the PR to proceed with full code review.\"
+            \"text\": \"🚀 *PR Created* 🚀\n\nPR has been created. Developer, please review the following changes before approving:\n\n$pr_changes_preview\n\n🔗 [View PR]($pr_url)\n\nOnce reviewed, approve the PR to proceed with full code review.\"
           }" ${{ secrets.TEAMS_WEBHOOK_URL }}
 
   manual_approval_for_pr:
