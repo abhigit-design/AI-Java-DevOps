@@ -30,9 +30,10 @@ jobs:
           
       - name: Send Teams Notification for PR Changes
         run: |
+          pr_url="https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
           pr_changes=$(cat pr_changes.txt)
           curl -X POST -H "Content-Type: application/json" -d "{
-            \"text\": \"🚀 *PR Created* 🚀\n\nPR has been created. Developer, please review the following changes before approving:\n\n$pr_changes\n\nOnce reviewed, approve the PR to proceed with full code review.\"
+            \"text\": \"🚀 *PR Created* 🚀\n\nPR has been created. Developer, please review the following changes before approving:\n\n$pr_changes\n\n🔗 [View PR]($pr_url)\n\nOnce reviewed, approve the PR to proceed with full code review.\"
           }" ${{ secrets.TEAMS_WEBHOOK_URL }}
 
   manual_approval_for_pr:
@@ -63,25 +64,16 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python scripts/ai_code_review.py
 
-      - name: Upload Full Code Review Report
+      - name: Upload Reports as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: full-code-review-report
-          path: full_code_review_report.txt  # Store the report for reference
-
-      - name: Add Full Code Review Comments to PR
-        run: |
-          FULL_REVIEW_RESULTS=$(cat full_code_review_report.txt)
-          curl -X POST -H "Content-Type: application/json" -d '{
-            "body": "Full Code Review Results: \n\n'"${FULL_REVIEW_RESULTS}"'\n\nPlease address any issues before merging."
-          }' https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: ai-reports
+          path: ./reports
 
   manual_approval_for_full_review:
     needs: ai_full_code_review
     runs-on: ubuntu-latest
-    environment: full-review-approval-required  # Enforce manual approval for full review step
+    environment: manual-approval-required  # Enforce manual approval for full review step
     steps:
       - name: Pause for Full Code Review Approval
         run: echo "Waiting for developer's approval after full code review in GitHub UI..."
