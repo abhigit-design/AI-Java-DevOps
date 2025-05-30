@@ -25,7 +25,7 @@
     </properties>
 
     <dependencies>
-        <!-- Spring Boot Starter Web for REST APIs -->
+        <!-- Spring Boot Starter Web For REST APIs -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
